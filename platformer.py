@@ -70,10 +70,13 @@ class Platformer(ShowBase):
         floor_np = floor.attachNewNode(floor_node)
         floor_np.setCollideMask(BitMask32.bit(0))
 
+
         # City decor with moving cars
         self.cars = []
         self.car_speed = 4
         self.setup_city()
+
+
 
         # Simple platform
         platform = self.loader.loadModel('models/box')
@@ -121,6 +124,7 @@ class Platformer(ShowBase):
 
         self.taskMgr.add(self.update, 'update')
 
+
     def setup_city(self):
         """Create a simple city scene with moving cars."""
         # Road
@@ -147,6 +151,8 @@ class Platformer(ShowBase):
             car.setPos(start_x, -6, 0.4)
             car.setColor(1, 0, 0, 1)
             self.cars.append({'node': car, 'dir': 1 if start_x < 0 else -1})
+
+
 
     def update_key(self, key, value):
         self.key_map[key] = value
@@ -177,6 +183,7 @@ class Platformer(ShowBase):
 
         self.traverser.traverse(self.render)
 
+
         # Move cars along the road
         for car in self.cars:
             node = car['node']
@@ -185,6 +192,7 @@ class Platformer(ShowBase):
                 car['dir'] = -1
             elif node.getX() < -9:
                 car['dir'] = 1
+
 
         # Reset vertical velocity if on ground
         if self.player.getZ() <= 0:

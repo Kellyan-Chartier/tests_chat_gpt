@@ -1,6 +1,8 @@
 # 3D Platformer Example
 
 This repository contains a minimal 3D platform game written with [Panda3D](https://www.panda3d.org/). The scene now includes a simple city street with moving cars and a smiley coin you can reach by jumping.
+=======
+
 
 ## Requirements
 
