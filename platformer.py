@@ -41,7 +41,7 @@ class Platformer(ShowBase):
 
         # Physics parameters
         self.gravity = -9.81
-        self.jump_speed = 5
+        self.jump_speed = 8
         self.move_speed = 5
         self.velocity = Vec3(0, 0, 0)
 
@@ -69,6 +69,14 @@ class Platformer(ShowBase):
         floor_node.addSolid(floor_solid)
         floor_np = floor.attachNewNode(floor_node)
         floor_np.setCollideMask(BitMask32.bit(0))
+
+
+        # City decor with moving cars
+        self.cars = []
+        self.car_speed = 4
+        self.setup_city()
+
+
 
         # Simple platform
         platform = self.loader.loadModel('models/box')
@@ -116,6 +124,36 @@ class Platformer(ShowBase):
 
         self.taskMgr.add(self.update, 'update')
 
+
+    def setup_city(self):
+        """Create a simple city scene with moving cars."""
+        # Road
+        road = self.loader.loadModel('models/box')
+        road.reparentTo(self.render)
+        road.setScale(20, 3, 0.1)
+        road.setPos(0, -6, 0)
+        road.setColor(0.2, 0.2, 0.2, 1)
+
+        # Buildings along the road
+        for x in range(-9, 10, 3):
+            for side in (-1, 1):
+                building = self.loader.loadModel('models/box')
+                building.reparentTo(self.render)
+                building.setScale(1.5, 1.5, 5)
+                building.setPos(x, -6 + side * 4, 2.5)
+                building.setColor(0.6, 0.6, 0.6, 1)
+
+        # Two simple cars moving back and forth
+        for start_x in (-8, 8):
+            car = self.loader.loadModel('models/box')
+            car.reparentTo(self.render)
+            car.setScale(0.7, 1.5, 0.4)
+            car.setPos(start_x, -6, 0.4)
+            car.setColor(1, 0, 0, 1)
+            self.cars.append({'node': car, 'dir': 1 if start_x < 0 else -1})
+
+
+
     def update_key(self, key, value):
         self.key_map[key] = value
 
@@ -144,6 +182,17 @@ class Platformer(ShowBase):
         self.player.setZ(self.player.getZ() + self.velocity.z * dt)
 
         self.traverser.traverse(self.render)
+
+
+        # Move cars along the road
+        for car in self.cars:
+            node = car['node']
+            node.setX(node.getX() + car['dir'] * self.car_speed * dt)
+            if node.getX() > 9:
+                car['dir'] = -1
+            elif node.getX() < -9:
+                car['dir'] = 1
+
 
         # Reset vertical velocity if on ground
         if self.player.getZ() <= 0:
