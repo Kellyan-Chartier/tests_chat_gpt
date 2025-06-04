@@ -74,10 +74,12 @@ def draw(stdscr, snake, food):
     sh, sw = stdscr.getmaxyx()
     for y in range(sh):
         stdscr.addch(y, 0, "#")
-        stdscr.addch(y, sw - 1, "#")
+        if y < sh - 1:  # avoid bottom-right corner
+            stdscr.addch(y, sw - 1, "#")
     for x in range(sw):
         stdscr.addch(0, x, "#")
-        stdscr.addch(sh - 1, x, "#")
+        if x < sw - 1:  # avoid bottom-right corner
+            stdscr.addch(sh - 1, x, "#")
 
     stdscr.addch(food[0], food[1], "*")
 
